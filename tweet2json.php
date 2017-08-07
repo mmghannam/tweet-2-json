@@ -70,7 +70,7 @@ function tweet_content($source, $itr) {
 	if ($itr == FALSE) {
 		$itr = count($shards);
 	}
-	for ($i = 1;  $i <= $itr; $i++) {
+	for ($i = 1;  $i <= $itr && $i < count($shards); $i++) {
 		$dirty_tweet = explode($finders['content-explode-bottom'], $shards[$i]);
 		$clean_tweet = ltrim($dirty_tweet[0],'">' );
 		$replaced = preg_replace($scrubs, $ringers, $clean_tweet);
@@ -88,7 +88,7 @@ function tweet_avatar($source, $itr) {
 	if ($itr == FALSE) {
 		$itr = count($shards);
 	}
-	for ($i = 1;  $i <= $itr; $i++) {
+	for ($i = 1;  $i <= $itr && $i < count($shards); $i++) {
 		$dirty_avatar = explode($finders['avatar-explode-bottom'], $shards[$i]);
 		array_push($avatars, $dirty_avatar[0]);
 	}
@@ -215,7 +215,7 @@ function scrape_spit ($user_target, $search, $find_cards, $itr, $realtime = FALS
 	}
 	
 //Checking for RTs
-	for ($i = 0; $i < $real_itr; $i++) {  
+	for ($i = 0; $i < $real_itr; $i++) {
 		if ($search === '' AND '/'.strtolower($target) === strtolower($avatars[$i][0])) {
 			$is_rt = FALSE;
 		}elseif ($search !== '') {
@@ -261,16 +261,26 @@ function return_json($array) {
 
 //These are the functions the user should actually call
 
-function user_tweets($username, $itr = 0, $find_cards = FALSE) {
+function user_tweets($username, $itr = 0, $find_cards = FALSE, $json = TRUE) {
 	$search = '';
 	$return = scrape_spit($username, $search, $find_cards, $itr);
-	return return_json($return);
+    if($json){
+        return return_json($return);
+    }
+    else {
+        return $return;
+    }
 }
 	
-function search_tweets($query, $itr = 0, $find_cards = FALSE, $realtime = TRUE) {
+function search_tweets($query, $itr = 0, $find_cards = FALSE, $realtime = TRUE , $json = TRUE ) {
 	$search = 'search';
 	$return = scrape_spit($query, $search, $find_cards, $itr, $realtime);
-	return return_json($return);
+    if($json){
+        return return_json($return);
+    }
+    else {
+        return $return;
+    }
 }
 
 /*THIS IS WHERE YOU MAKE EDITS TO CHANGE WHAT THIS SCRIPT RETURNS*/
